@@ -1,0 +1,21 @@
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
+
+local function disableAnim(char)
+    local anim = char:FindFirstChild("Animate")
+    if anim then
+        anim.Disabled = true
+    else
+        -- sometimes Animate appears a little late
+        char.ChildAdded:Connect(function(child)
+            if child.Name == "Animate" then
+                child.Disabled = true
+            end
+        end)
+    end
+end
+
+lp.CharacterAdded:Connect(disableAnim)
+if lp.Character then
+    disableAnim(lp.Character)
+end
