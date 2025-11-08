@@ -2,21 +2,18 @@ local Players = game:GetService("Players")
 local lp = Players.LocalPlayer
 
 local function disableAnim(char)
-    task.wait(1) -- wait a second to let stuff load first
-    local anim = char:FindFirstChild("Animate")
-    if anim then
-        anim.Disabled = true
-    else
-        char.ChildAdded:Connect(function(child)
-            if child.Name == "Animate" then
-                task.wait(0.5)
-                child.Disabled = true
-            end
-        end)
-    end
+	task.spawn(function()
+		while char.Parent do
+			local anim = char:FindFirstChild("Animate")
+			if anim and not anim.Disabled then
+				pcall(function() anim.Disabled = true end)
+			end
+			task.wait(1) -- keep checking every second
+		end
+	end)
 end
 
 lp.CharacterAdded:Connect(disableAnim)
 if lp.Character then
-    disableAnim(lp.Character)
+	disableAnim(lp.Character)
 end
