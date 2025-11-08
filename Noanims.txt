@@ -2,13 +2,14 @@ local Players = game:GetService("Players")
 local lp = Players.LocalPlayer
 
 local function disableAnim(char)
+    task.wait(1) -- wait a second to let stuff load first
     local anim = char:FindFirstChild("Animate")
     if anim then
         anim.Disabled = true
     else
-        -- sometimes Animate appears a little late
         char.ChildAdded:Connect(function(child)
             if child.Name == "Animate" then
+                task.wait(0.5)
                 child.Disabled = true
             end
         end)
