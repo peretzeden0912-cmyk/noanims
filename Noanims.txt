@@ -1,13 +1,25 @@
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local function freezeAnimations(char)
-	local humanoid = char:WaitForChild("Humanoid")
-	for _, track in ipairs(humanoid:GetPlayingAnimationTracks()) do
-		track:Stop()
-	end
+local lp = Players.LocalPlayer
+
+local function disableAnim(char)
+    -- Wait a few seconds before disabling
+    task.wait(2) -- wait 2 seconds (adjust as needed)
+    
+    local anim = char:FindFirstChild("Animate")
+    if anim then
+        anim.Disabled = true
+    else
+        -- sometimes Animate appears a little later
+        char.ChildAdded:Connect(function(child)
+            if child.Name == "Animate" then
+                task.wait(0.1) -- tiny delay to make sure it fully initializes
+                child.Disabled = true
+            end
+        end)
+    end
 end
 
-player.CharacterAdded:Connect(freezeAnimations)
-if player.Character then
-	freezeAnimations(player.Character)
+lp.CharacterAdded:Connect(disableAnim)
+if lp.Character then
+    disableAnim(lp.Character)
 end
