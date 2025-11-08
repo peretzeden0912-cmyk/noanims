@@ -1,23 +1,23 @@
-local lp = game:GetService("Players").LocalPlayer
+local Players = game:GetService("Players")
+local lp = Players.LocalPlayer
 
-local function stopAllAnims(char)
-	local hum = char:FindFirstChildOfClass("Humanoid")
-	if not hum then return end
-
-	for _, track in ipairs(hum:GetPlayingAnimationTracks()) do
-		track:Stop()
-	end
-
-	-- keep checking and stopping new ones
-	task.spawn(function()
-		while char.Parent do
-			for _, track in ipairs(hum:GetPlayingAnimationTracks()) do
-				track:Stop()
-			end
-			task.wait(1)
-		end
-	end)
+local function disableAnim(char)
+    task.wait(3) -- ⏱ wait 3 seconds to let everything load
+    local anim = char:FindFirstChild("Animate")
+    if anim then
+        anim.Disabled = true
+    else
+        -- if Animate shows up late, catch it then
+        char.ChildAdded:Connect(function(child)
+            if child.Name == "Animate" then
+                task.wait(0.5)
+                child.Disabled = true
+            end
+        end)
+    end
 end
 
-lp.CharacterAdded:Connect(stopAllAnims)
-if lp.Character then stopAllAnims(lp.Character) end
+lp.CharacterAdded:Connect(disableAnim)
+if lp.Character then
+    disableAnim(lp.Character)
+end
